@@ -1,6 +1,8 @@
 package io.aregger.otf.service;
 
 import oracle.jdbc.datasource.impl.OracleDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.BufferedOutputStream;
@@ -8,10 +10,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
 public class TracefileService {
+
+    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
     private TracefileDao tracefileDao;
 
 
@@ -39,7 +45,7 @@ public class TracefileService {
 
     private File createFile(String tracefileName) throws IOException {
         File tmpFile = File.createTempFile("otf_", "_" + tracefileName);
-        System.out.println(tmpFile.getAbsolutePath());
+        log.info("Created file " + tmpFile.getAbsolutePath());
         return tmpFile;
     }
 
