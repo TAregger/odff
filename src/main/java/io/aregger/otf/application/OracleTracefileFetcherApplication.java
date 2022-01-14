@@ -2,6 +2,7 @@ package io.aregger.otf.application;
 
 import io.aregger.otf.service.ConnectionIdentifier;
 import io.aregger.otf.service.TracefileService;
+import io.aregger.otf.service.TracefileWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.ApplicationArguments;
@@ -32,7 +33,7 @@ public class OracleTracefileFetcherApplication implements ApplicationRunner {
         boolean alertlog = args.containsOption("alertlog");
 
 
-        TracefileService tracefileService = new TracefileService(new ConnectionIdentifier(url));
+        TracefileService tracefileService = new TracefileService(new TracefileWriter(), new ConnectionIdentifier(url));
         if (alertlog) {
             tracefileService.fetchAlertLog();
         } else {

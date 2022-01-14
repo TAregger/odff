@@ -16,7 +16,7 @@ public class TracefileWriter {
 
     private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    TracefileWriter() {
+    public TracefileWriter() {
     }
 
     void writeFile(String tracefileName, DatabaseFileFetcher fetcher) throws IOException {

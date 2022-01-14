@@ -2,7 +2,7 @@ package io.aregger.otf.service;
 
 import java.util.function.Consumer;
 
-public class TracefileFetcher implements DatabaseFileFetcher {
+class TracefileFetcher implements DatabaseFileFetcher {
 
     private final String tracefileName;
     private final TracefileDao dao;

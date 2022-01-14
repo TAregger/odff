@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 
 import java.util.function.Consumer;
 
-public class TracefileDao {
+class TracefileDao {
 
     private static final String SELECT_TRACEFILE_PAYLOAD = "select t.payload from GV$DIAG_TRACE_FILE_CONTENTS t where t.TRACE_FILENAME = ?";
     private static final String SELECT_ALERTLOG_PAYLOAD = "select message_text from v$diag_alert_ext";

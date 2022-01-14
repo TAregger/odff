@@ -2,7 +2,7 @@ package io.aregger.otf.service;
 
 import java.util.function.Consumer;
 
-public class AlertlogFetcher implements DatabaseFileFetcher {
+class AlertlogFetcher implements DatabaseFileFetcher {
 
     private final TracefileDao dao;
 

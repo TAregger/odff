@@ -14,8 +14,8 @@ public class TracefileService {
     private final TracefileWriter tracefileWriter;
     private final TracefileDao tracefileDao;
 
-    public TracefileService(ConnectionIdentifier connectionIdentifier) throws SQLException {
-        this.tracefileWriter = new TracefileWriter();
+    public TracefileService(TracefileWriter tracefileWriter, ConnectionIdentifier connectionIdentifier) throws SQLException {
+        this.tracefileWriter = tracefileWriter;
         this.tracefileDao = new TracefileDao(JdbcTemplateUtils.createJdbcTemplate(connectionIdentifier));
     }
 
