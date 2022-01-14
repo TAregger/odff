@@ -8,7 +8,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 import java.lang.invoke.MethodHandles;
 
@@ -23,20 +22,22 @@ public class OracleTracefileFetcherApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if(!args.containsOption("file") || !args.containsOption("url")) {
-            log.error("Specify --url and --file");
-            log.error("E.g. --url=jdbc:oracle:thin:c##dbzuser/dbz@localhost:1521/ORCLCDB --file=ORCLCDB_mz00_1444.trc");
-            return;
-        }
+//        if(!args.containsOption("file") || !args.containsOption("url")) {
+//            log.error("Specify --url and --file");
+//            log.error("E.g. --url=jdbc:oracle:thin:c##dbzuser/dbz@localhost:1521/ORCLCDB --file=ORCLCDB_mz00_1444.trc");
+//            return;
+//        }
         String url = args.getOptionValues("url").get(0);
         String file = args.getOptionValues("file").get(0);
+        boolean alertlog = args.containsOption("alertlog");
 
-        tracefileService().connect(new ConnectionIdentifier(url));
-        tracefileService().fetchTracefile(file);
+
+        TracefileService tracefileService = new TracefileService(new ConnectionIdentifier(url));
+        if (alertlog) {
+            tracefileService.fetchAlertLog();
+        } else {
+            tracefileService.fetchTracefile(file);
+        }
     }
 
-    @Bean
-    TracefileService tracefileService() {
-        return new TracefileService();
-    }
 }
