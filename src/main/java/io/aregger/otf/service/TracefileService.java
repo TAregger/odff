@@ -9,8 +9,6 @@ import java.sql.SQLException;
 
 public class TracefileService {
 
-    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
-
     private final TracefileWriter tracefileWriter;
     private final TracefileDao tracefileDao;
 

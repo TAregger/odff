@@ -15,8 +15,6 @@ import java.lang.invoke.MethodHandles;
 @SpringBootApplication
 public class OracleTracefileFetcherApplication implements ApplicationRunner {
 
-    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
-
     public static void main(String[] args) {
         SpringApplication.run(OracleTracefileFetcherApplication.class, args);
     }
