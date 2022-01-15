@@ -1,17 +1,20 @@
 # Usage
+Show help
 
-    java -jar oracle-tracefile-fetcher-1.0-SNAPSHOT-shaded.jar
+    odff -h
 
 ```
-Missing required option: '--url=<url>'
-Usage: <main class> -u=<url> (-t=<tracefile> | -a)
+Usage: odff [-hV] -u=<url> (-t=<tracefile> | -a)
+Oracle Diag File Fetcher. Tool to fetch tracefiles and alertlog.
   -a, --alertlog    Whether to fetch the alert log or not
+  -h, --help        Show this help message and exit.
   -t, --tracefileName=<tracefile>
                     Name of the trace file
   -u, --url=<url>   JDBC connection string
+  -V, --version     Print version information and exit.
 ```
 Fetch alertlog
 
-    java -jar oracle-tracefile-fetcher-1.0-SNAPSHOT-shaded.jar --url=jdbc:oracle:thin:c##dbzuser/dbz@localhost:1521/ORCLCDB --alertlog
+    odff --url=jdbc:oracle:thin:c##dbzuser/dbz@localhost:1521/ORCLCDB --alertlog
 
 

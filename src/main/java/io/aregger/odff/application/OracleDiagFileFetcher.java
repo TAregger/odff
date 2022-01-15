@@ -1,15 +1,20 @@
-package io.aregger.otf.application;
+package io.aregger.odff.application;
 
-import io.aregger.otf.service.ConnectionIdentifier;
-import io.aregger.otf.service.TracefileService;
-import io.aregger.otf.service.TracefileWriter;
+import io.aregger.odff.service.ConnectionIdentifier;
+import io.aregger.odff.service.TracefileService;
+import io.aregger.odff.service.TracefileWriter;
 import picocli.CommandLine;
 
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.*;
 
-public class OracleTracefileFetcherCli implements Callable<Integer> {
+@Command(
+    name = "odff",
+    description = "Oracle Diag File Fetcher. Tool to fetch tracefiles and alertlog.",
+    mixinStandardHelpOptions=true,
+    version = "1.0-SNAPSHOT")
+public class OracleDiagFileFetcher implements Callable<Integer> {
 
     @Option(names = {"-u", "--url"}, description = "JDBC connection string", required = true)
     private String url;
@@ -25,7 +30,7 @@ public class OracleTracefileFetcherCli implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new OracleTracefileFetcherCli()).execute(args);
+        int exitCode = new CommandLine(new OracleDiagFileFetcher()).execute(args);
         System.exit(exitCode);
     }
 
@@ -37,7 +42,6 @@ public class OracleTracefileFetcherCli implements Callable<Integer> {
             tracefileService.fetchAlertLog();
         } else {
             tracefileService.fetchTracefile(databaseFileType.tracefile);
-
         }
         return 0;
     }

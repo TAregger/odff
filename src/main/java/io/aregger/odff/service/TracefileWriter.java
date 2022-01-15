@@ -1,4 +1,4 @@
-package io.aregger.otf.service;
+package io.aregger.odff.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
