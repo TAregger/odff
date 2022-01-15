@@ -1,0 +1,3 @@
+#!/bin/bash
+# TODO assemble in zip file
+java -jar target/oracle-tracefile-fetcher-1.0-SNAPSHOT-shaded.jar "$@"
