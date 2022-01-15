@@ -1,4 +1,7 @@
-# Usage
+# odff – Oracle Diag File Fetcher
+![Build Status](https://github.com/TAregger/odff/actions/workflows/maven.yml/badge.svg)
+
+## Usage
 Show help
 
     odff -h
