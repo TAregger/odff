@@ -18,6 +18,6 @@ Oracle Diag File Fetcher. Tool to fetch tracefiles and alertlog.
 ```
 Fetch alertlog
 
-    odff --url=jdbc:oracle:thin:c##dbzuser/dbz@localhost:1521/ORCLCDB --alertlog
+    odff --url=jdbc:oracle:thin:scott/tiger@localhost:1521/ORCLCDB --alertlog
 
 
