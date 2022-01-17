@@ -30,7 +30,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
         @Option(names = {"-t", "--tracefileName"}, description = "Name of the trace file")
         private String tracefile;
         @Option(names = {"-a", "--alertlog"}, description = "Whether to fetch the alert log or not")
-        private Boolean fetchAlertlog;
+        private boolean fetchAlertlog;
     }
 
     public static void main(String[] args) {
