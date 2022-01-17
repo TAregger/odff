@@ -10,26 +10,26 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 public class TracefileWriter {
 
     private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    public TracefileWriter() {
+    private final Path currentDir;
+
+    public TracefileWriter(Path currentDir) {
+        this.currentDir = requireNonNull(currentDir, "'currentDir' must not be null");
     }
 
     void writeFile(String tracefileName, DatabaseFileFetcher fetcher) throws IOException {
-        File file = createFile(tracefileName);
+        File file = FileUtils.createFile(currentDir, tracefileName);
         try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             fetcher.fetchTracefile(writeLine(outputStream));
         }
-    }
-
-    private File createFile(String tracefileName) throws IOException {
-        File tmpFile = File.createTempFile("otf_", "_" + tracefileName);
-        log.info("Created file " + tmpFile.getAbsolutePath());
-        return tmpFile;
     }
 
     private static Consumer<String> writeLine(OutputStream outputStream) {

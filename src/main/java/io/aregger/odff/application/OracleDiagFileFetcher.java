@@ -5,6 +5,10 @@ import io.aregger.odff.service.TracefileService;
 import io.aregger.odff.service.TracefileWriter;
 import picocli.CommandLine;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.*;
@@ -37,12 +41,24 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        TracefileService tracefileService = new TracefileService(new TracefileWriter(), new ConnectionIdentifier(url));
+        try {
+            return doCall();
+        } catch (FileAlreadyExistsException e) {
+            return 1;
+        }
+    }
+
+    private int doCall() throws SQLException, IOException {
+        TracefileService tracefileService = new TracefileService(new TracefileWriter(getCurrentDir()), new ConnectionIdentifier(url));
         if (databaseFileType.fetchAlertlog) {
             tracefileService.fetchAlertLog();
         } else {
             tracefileService.fetchTracefile(databaseFileType.tracefile);
         }
         return 0;
+    }
+
+    private Path getCurrentDir() {
+        return Path.of(System.getProperty("user.dir"));
     }
 }
