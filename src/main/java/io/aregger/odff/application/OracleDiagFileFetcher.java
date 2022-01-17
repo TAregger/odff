@@ -2,16 +2,17 @@ package io.aregger.odff.application;
 
 import io.aregger.odff.service.ConnectionIdentifier;
 import io.aregger.odff.service.TracefileService;
+import io.aregger.odff.service.TracefileServiceException;
+import io.aregger.odff.service.TracefileServiceImpl;
 import io.aregger.odff.service.TracefileWriter;
 import picocli.CommandLine;
 
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.concurrent.Callable;
 
-import static picocli.CommandLine.*;
+import static picocli.CommandLine.ArgGroup;
+import static picocli.CommandLine.Command;
+import static picocli.CommandLine.Option;
 
 @Command(
     name = "odff",
@@ -23,7 +24,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     @Option(names = {"-u", "--url"}, description = "JDBC connection string", required = true)
     private String url;
 
-    @ArgGroup(exclusive = true, multiplicity = "1")
+    @ArgGroup(multiplicity = "1")
     DatabaseFileType databaseFileType;
 
     static class DatabaseFileType {
@@ -38,27 +39,37 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
         System.exit(exitCode);
     }
 
+    private final TracefileService tracefileService;
+    private final Path workingDir;
+
+    private OracleDiagFileFetcher() {
+        this.tracefileService = new TracefileServiceImpl();
+        this.workingDir = Path.of(System.getProperty("user.dir"));
+    }
+
+    // @VisibleForTesting
+    OracleDiagFileFetcher(TracefileService tracefileService, Path workingDir) {
+        this.tracefileService = tracefileService;
+        this.workingDir = workingDir;
+    }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         try {
             return doCall();
-        } catch (FileAlreadyExistsException e) {
+        } catch (TracefileServiceException e) {
             return 1;
         }
     }
 
-    private int doCall() throws SQLException, IOException {
-        TracefileService tracefileService = new TracefileService(new TracefileWriter(getCurrentDir()), new ConnectionIdentifier(url));
-        if (databaseFileType.fetchAlertlog) {
-            tracefileService.fetchAlertLog();
+    private int doCall() {
+        this.tracefileService.initialize(new TracefileWriter(workingDir), new ConnectionIdentifier(this.url));
+        if (this.databaseFileType.fetchAlertlog) {
+            this.tracefileService.fetchAlertLog();
         } else {
-            tracefileService.fetchTracefile(databaseFileType.tracefile);
+            this.tracefileService.fetchTracefile(this.databaseFileType.tracefile);
         }
         return 0;
     }
 
-    private Path getCurrentDir() {
-        return Path.of(System.getProperty("user.dir"));
-    }
 }

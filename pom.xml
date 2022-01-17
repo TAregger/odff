@@ -17,6 +17,10 @@
         <ojdbc11.version>21.1.0.0</ojdbc11.version>
         <log4j.version>2.17.1</log4j.version>
         <picocli.version>4.6.2</picocli.version>
+        <junit.version>5.8.2</junit.version>
+        <mockito.version>4.2.0</mockito.version>
+        <assertj.version>3.22.0</assertj.version>
+        <maven-surefire.version>3.0.0-M5</maven-surefire.version>
     </properties>
 
     <dependencies>
@@ -39,6 +43,26 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -92,6 +116,10 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire.version}</version>
             </plugin>
         </plugins>
     </build>

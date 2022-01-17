@@ -11,14 +11,18 @@ class JdbcTemplateUtils {
         throw new AssertionError("non-instantiable class");
     }
 
-    public static JdbcTemplate createJdbcTemplate(ConnectionIdentifier connectionIdentifier) throws SQLException {
+    public static JdbcTemplate createJdbcTemplate(ConnectionIdentifier connectionIdentifier) {
         return new JdbcTemplate(createDataSource(connectionIdentifier));
     }
 
-    private static OracleDataSource createDataSource(ConnectionIdentifier connectionIdentifier) throws SQLException {
-        OracleDataSource ds = new OracleDataSource();
-        ds.setURL(connectionIdentifier.buildJbcConnectionString());
-        ds.setConnectionProperty("defaultRowPrefetch", "1000");
-        return ds;
+    private static OracleDataSource createDataSource(ConnectionIdentifier connectionIdentifier) {
+        try {
+            OracleDataSource ds = new OracleDataSource();
+            ds.setURL(connectionIdentifier.buildJbcConnectionString());
+            ds.setConnectionProperty("defaultRowPrefetch", "1000");
+            return ds;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

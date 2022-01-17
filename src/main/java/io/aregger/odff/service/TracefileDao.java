@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 class TracefileDao {
 
-    private static final String SELECT_TRACEFILE_PAYLOAD = "select t.payload from GV$DIAG_TRACE_FILE_CONTENTS t where t.TRACE_FILENAME = ?";
+    private static final String SELECT_TRACEFILE_PAYLOAD = "select t.payload from gv$diag_trace_file_contents t where t.trace_filename = ?";
     private static final String SELECT_ALERTLOG_PAYLOAD = "select message_text from v$diag_alert_ext";
 
     private final JdbcOperations jdbc;
