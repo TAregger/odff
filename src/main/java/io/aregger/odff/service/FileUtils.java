@@ -25,7 +25,6 @@ public class FileUtils {
             log.error(msg);
             throw new FileAlreadyExistsException(msg);
         }
-        log.info("Created file " + file.getAbsolutePath());
         return file;
     }
 

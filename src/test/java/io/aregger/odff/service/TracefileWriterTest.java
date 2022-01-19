@@ -46,8 +46,7 @@ class TracefileWriterTest {
 
         // Assert
         File tracefile = this.tempDir.resolve("myFile.trc").toFile();
-        assertThat(tracefile).exists();
-        assertThat(tracefile).isEmpty();
+        assertThat(tracefile).doesNotExist();
     }
 
     @Test

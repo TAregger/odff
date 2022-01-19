@@ -1,18 +1,26 @@
 package io.aregger.odff.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 public class TracefileWriter {
+
+    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 
     private final Path currentDir;
 
@@ -24,6 +32,13 @@ public class TracefileWriter {
         File file = FileUtils.createFile(currentDir, tracefileName);
         try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             fetcher.fetchTracefile(writeLine(outputStream));
+        }
+        if (file.length() == 0) {
+            // If no rows are returned by the database, e.g. because an non-existent tracefile was specified by the user,
+            // the file is empty and should be deleted.
+            file.delete();
+        } else {
+            log.info("{} bytes written to file {}", NUMBER_FORMAT.format(file.length()), file.getAbsolutePath());
         }
     }
 
