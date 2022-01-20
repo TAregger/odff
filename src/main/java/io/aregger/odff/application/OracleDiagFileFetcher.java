@@ -16,9 +16,9 @@ import static picocli.CommandLine.Option;
 
 @Command(
     name = "odff",
-    description = "Oracle Diag File Fetcher. Fetches alert logs and trace files from Oracle databases via JDBC.",
+    description = "Oracle Diag File Fetcher.%nFetches alert logs and trace files from Oracle databases.",
     mixinStandardHelpOptions=true,
-    version = "1.0-SNAPSHOT")
+    sortOptions = false)
 public class OracleDiagFileFetcher implements Callable<Integer> {
 
     @Option(names = {"-u", "--url"}, description = "JDBC connection string", required = true)
@@ -28,9 +28,9 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     DiagFileOption diagFileOption;
 
     private static class DiagFileOption {
-        @Option(names = {"-t", "--tracefileName"}, description = "Name of the trace file")
+        @Option(names = {"-t", "--tracefileName"}, description = "Name of the trace file to fetch")
         private String tracefileName;
-        @Option(names = {"-a", "--alertlog"}, description = "Whether to fetch the alert log or not")
+        @Option(names = {"-a", "--alertlog"}, description = "Fetches the alert log instead of a trace file")
         private boolean fetchAlertlog;
     }
 
