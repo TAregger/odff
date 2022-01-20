@@ -16,7 +16,7 @@ import static picocli.CommandLine.Option;
 
 @Command(
     name = "odff",
-    description = "Oracle Diag File Fetcher. Tool to fetch tracefiles and alertlog.",
+    description = "Oracle Diag File Fetcher. Fetches alert logs and trace files from Oracle databases via JDBC.",
     mixinStandardHelpOptions=true,
     version = "1.0-SNAPSHOT")
 public class OracleDiagFileFetcher implements Callable<Integer> {
@@ -25,11 +25,11 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     private String url;
 
     @ArgGroup(multiplicity = "1")
-    DatabaseFileType databaseFileType;
+    DiagFileOption diagFileOption;
 
-    static class DatabaseFileType {
+    private static class DiagFileOption {
         @Option(names = {"-t", "--tracefileName"}, description = "Name of the trace file")
-        private String tracefile;
+        private String tracefileName;
         @Option(names = {"-a", "--alertlog"}, description = "Whether to fetch the alert log or not")
         private boolean fetchAlertlog;
     }
@@ -64,10 +64,10 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
 
     private int doCall() {
         this.tracefileService.initialize(new TracefileWriter(workingDir), new ConnectionIdentifier(this.url));
-        if (this.databaseFileType.fetchAlertlog) {
+        if (this.diagFileOption.fetchAlertlog) {
             this.tracefileService.fetchAlertLog();
         } else {
-            this.tracefileService.fetchTracefile(this.databaseFileType.tracefile);
+            this.tracefileService.fetchTracefile(this.diagFileOption.tracefileName);
         }
         return 0;
     }
