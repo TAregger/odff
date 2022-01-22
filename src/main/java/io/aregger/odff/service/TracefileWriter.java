@@ -32,12 +32,15 @@ public class TracefileWriter {
         File file = FileUtils.createFile(currentDir, tracefileName);
         try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             fetcher.fetchTracefile(writeLine(outputStream));
+        } finally {
+            if (file.length() == 0) {
+                // If no rows are returned by the database, e.g. because an non-existent tracefile was specified by the user,
+                // the file is empty and should be deleted.
+                file.delete();
+            }
         }
-        if (file.length() == 0) {
-            // If no rows are returned by the database, e.g. because an non-existent tracefile was specified by the user,
-            // the file is empty and should be deleted.
-            file.delete();
-        } else {
+
+        if (file.length() != 0) {
             log.info("{} bytes written to file {}", NUMBER_FORMAT.format(file.length()), file.getAbsolutePath());
         }
     }

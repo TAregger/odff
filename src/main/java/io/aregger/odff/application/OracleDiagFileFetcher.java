@@ -21,7 +21,7 @@ import static picocli.CommandLine.Option;
     description = "Oracle Diag File Fetcher.%nFetches alert logs and trace files from Oracle databases.",
     mixinStandardHelpOptions=true,
     sortOptions = false,
-    usageHelpWidth = 120)
+    usageHelpWidth = 125)
 
 public class OracleDiagFileFetcher implements Callable<Integer> {
 
@@ -45,7 +45,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
                 required = true)
             String connectionAlias;
             @Option(names = {"-c", "--connections"}, description =
-                "File with connection definitions. If not specified the default is " + DEFAULT_CONNECTIONS_FILES + " in the the users current working " +
+                "File with connection definitions. If not specified the default is \n" + DEFAULT_CONNECTIONS_FILES + " in the the users current working " +
                 "directory")
             String connectionFileName;
             // TODO implement password

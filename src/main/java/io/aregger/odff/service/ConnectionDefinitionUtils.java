@@ -18,6 +18,10 @@ public class ConnectionDefinitionUtils {
 
     private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
+    public ConnectionDefinitionUtils() {
+        throw new AssertionError("non-instantiable class");
+    }
+
     public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String alias, String password) {
         return ConnectionFileReader.getConnectionFromFile(file, alias).map(c -> {
             var connectionWithProvidedPassword = new ConnectionDefinition(c.alias(), c.tnsString(), c.username(), password);
