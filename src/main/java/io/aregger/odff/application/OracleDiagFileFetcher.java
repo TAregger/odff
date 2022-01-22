@@ -1,6 +1,7 @@
 package io.aregger.odff.application;
 
-import io.aregger.odff.service.ConnectionIdentifier;
+import io.aregger.odff.service.ConnectionDefinition;
+import io.aregger.odff.service.ConnectionDefinitionUtils;
 import io.aregger.odff.service.TracefileService;
 import io.aregger.odff.service.TracefileServiceException;
 import io.aregger.odff.service.TracefileServiceImpl;
@@ -8,6 +9,7 @@ import io.aregger.odff.service.TracefileWriter;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.ArgGroup;
@@ -18,14 +20,39 @@ import static picocli.CommandLine.Option;
     name = "odff",
     description = "Oracle Diag File Fetcher.%nFetches alert logs and trace files from Oracle databases.",
     mixinStandardHelpOptions=true,
-    sortOptions = false)
+    sortOptions = false,
+    usageHelpWidth = 120)
+
 public class OracleDiagFileFetcher implements Callable<Integer> {
 
-    @Option(names = {"-u", "--url"}, description = "JDBC connection string", required = true)
-    private String url;
+    private static final String DEFAULT_CONNECTIONS_FILES = "connections.json";
+
+    @ArgGroup(multiplicity = "1")
+    ConnectionOptions connectionOptions;
 
     @ArgGroup(multiplicity = "1")
     DiagFileOption diagFileOption;
+
+    private static class ConnectionOptions {
+        @Option(names = {"-u", "--url"}, description = "JDBC connection string")
+        private String url;
+
+        @ArgGroup(exclusive = false)
+        ConnectionFromFileOptions connectionFromFileOptions;
+
+        private static class ConnectionFromFileOptions {
+            @Option(names = {"-n", "--name"}, description = "Name of the connection to use as defined in the connection definitions",
+                required = true)
+            String connectionAlias;
+            @Option(names = {"-c", "--connections"}, description =
+                "File with connection definitions. If not specified the default is " + DEFAULT_CONNECTIONS_FILES + " in the the users current working " +
+                "directory")
+            String connectionFileName;
+            // TODO implement password
+            @Option(names = {"-p", "--password"}, description = "Password used to connect", arity = "0..1")
+            String password;
+        }
+    }
 
     private static class DiagFileOption {
         @Option(names = {"-t", "--tracefileName"}, description = "Name of the trace file to fetch")
@@ -35,8 +62,14 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new OracleDiagFileFetcher()).execute(args);
-        System.exit(exitCode);
+        System.exit(main(args, new OracleDiagFileFetcher()));
+    }
+
+    // @VisibleForTesting
+    static int main(String[] args, OracleDiagFileFetcher app) {
+        return new CommandLine(app)
+            .setUsageHelpLongOptionsMaxWidth(40)
+            .execute(args);
     }
 
     private final TracefileService tracefileService;
@@ -63,13 +96,42 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     }
 
     private int doCall() {
-        this.tracefileService.initialize(new TracefileWriter(workingDir), new ConnectionIdentifier(this.url));
+        String url;
+        if (isUrlArgumentProvided()) {
+            url = connectionOptions.url;
+        } else {
+            Optional<ConnectionDefinition> connectionDefinition = readConnectionFromFile();
+            if (connectionDefinition.isEmpty()) {
+                return 1;
+            }
+            url = connectionDefinition.get().buildJdbcConnectionString();
+        }
+
+        this.tracefileService.initialize(new TracefileWriter(workingDir), url);
         if (this.diagFileOption.fetchAlertlog) {
             this.tracefileService.fetchAlertLog();
         } else {
             this.tracefileService.fetchTracefile(this.diagFileOption.tracefileName);
         }
+
         return 0;
+    }
+
+    private boolean isUrlArgumentProvided() {
+        return connectionOptions.url != null;
+    }
+
+    private Optional<ConnectionDefinition> readConnectionFromFile() {
+        String fileName = getConnectionFileName() != null ? getConnectionFileName() : workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
+        return ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(Path.of(fileName).toFile(), getConnectionAlias());
+    }
+
+    private String getConnectionFileName() {
+        return connectionOptions.connectionFromFileOptions.connectionFileName;
+    }
+
+    private String getConnectionAlias() {
+        return connectionOptions.connectionFromFileOptions.connectionAlias;
     }
 
 }

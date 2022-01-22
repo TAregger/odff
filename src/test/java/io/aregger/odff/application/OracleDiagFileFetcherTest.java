@@ -4,8 +4,10 @@ import io.aregger.odff.service.TracefileService;
 import io.aregger.odff.service.TracefileServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import picocli.CommandLine;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +35,7 @@ class OracleDiagFileFetcherTest {
         String[] args = new String[]{"--url=url", "--alertlog"};
 
         // Act
-        int exitCode = new CommandLine(fetcher).execute(args);
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
@@ -48,7 +50,7 @@ class OracleDiagFileFetcherTest {
         String[] args = new String[]{"--url=url", "--tracefileName=myFile.trc"};
 
         // Act
-        int exitCode = new CommandLine(fetcher).execute(args);
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
@@ -63,7 +65,7 @@ class OracleDiagFileFetcherTest {
         String[] args = new String[]{"--url=url", "--tracefileName"};
 
         // Act
-        int exitCode = new CommandLine(fetcher).execute(args);
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
@@ -76,7 +78,7 @@ class OracleDiagFileFetcherTest {
         String[] args = new String[]{"--alertlog"};
 
         // Act
-        int exitCode = new CommandLine(fetcher).execute(args);
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
@@ -89,7 +91,7 @@ class OracleDiagFileFetcherTest {
         String[] args = new String[]{"--url=url"};
 
         // Act
-        int exitCode = new CommandLine(fetcher).execute(args);
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
@@ -103,13 +105,72 @@ class OracleDiagFileFetcherTest {
         doThrow(TracefileServiceException.class).when(tracefileService).fetchAlertLog();
 
         // Act
-        int exitCode = new CommandLine(fetcher).execute(args);
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(1);
         verify(tracefileService).initialize(any(), any());
         verify(tracefileService).fetchAlertLog();
         verifyNoMoreInteractions(tracefileService);
+    }
+
+    @Test
+    void testUrlAndConnectionName() {
+        // Arrange
+        String[] args = new String[]{"--url=url", "--name=name", "--alertlog"};
+
+        // Act
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2);
+        verifyNoInteractions(tracefileService);
+    }
+
+    @Test
+    void testConnectionNameWithDefaultFileLocation() throws IOException {
+        // Arrange
+        String[] args = new String[]{"--name=OCDB1", "--alertlog"};
+        File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, connectionDefinitions.getParentFile().toPath());
+
+        // Act
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
+
+        // Assert
+        assertThat(exitCode).isEqualTo(0);
+        verify(tracefileService).initialize(any(), any());
+        verify(tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(tracefileService);
+    }
+
+    @Test
+    void testConnectionNameNotExistent() throws IOException {
+        // Arrange
+        String[] args = new String[]{"--name=OCDBx", "--alertlog"};
+        File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, connectionDefinitions.getParentFile().toPath());
+
+        // Act
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1);
+        verifyNoMoreInteractions(tracefileService);
+    }
+
+    @Test
+    void testConnectionNameWithGivenInvalidFile() throws IOException {
+        // Arrange
+        File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections-invalid-json.json"));
+        String[] args = new String[]{"--name=OCDB1", "--connections=" + connectionDefinitions, "--alertlog"};
+
+        // Act
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1);
+        verifyNoInteractions(tracefileService);
     }
 
 }

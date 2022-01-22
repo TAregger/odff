@@ -17,9 +17,9 @@ public class TracefileServiceImpl implements TracefileService {
     private TracefileDao tracefileDao;
 
     @Override
-    public void initialize(TracefileWriter tracefileWriter, ConnectionIdentifier connectionIdentifier) {
+    public void initialize(TracefileWriter tracefileWriter, String jdbcConnectionString) {
         this.tracefileWriter = tracefileWriter;
-        this.tracefileDao = new TracefileDao(JdbcTemplateUtils.createJdbcTemplate(connectionIdentifier));
+        this.tracefileDao = new TracefileDao(JdbcTemplateUtils.createJdbcTemplate(jdbcConnectionString));
     }
 
     @Override

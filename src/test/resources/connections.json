@@ -1,0 +1,29 @@
+[
+  {
+    "alias": "OCDB1",
+    "tnsString": "localhost:1521/ORCLCDB",
+    "username": "scott",
+    "password": "tiger"
+  },
+  {
+    "alias": "OCDB2",
+    "username": "scott"
+  },
+  {
+    "alias": "OCDB3",
+    "tnsString": "localhost:1521/ORCLCDB",
+    "username": "scott",
+    "password": "tiger"
+  },
+  {
+    "alias": "OCDB3",
+    "tnsString": "localhost:1521/ORCLCDB",
+    "username": "scott",
+    "password": "tiger"
+  },
+  {
+    "alias": "OCDB4",
+    "tnsString": "localhost:1521/ORCLCDB",
+    "username": "scott"
+  }
+]

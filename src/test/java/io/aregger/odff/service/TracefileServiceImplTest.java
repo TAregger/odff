@@ -32,8 +32,7 @@ class TracefileServiceImplTest {
         // Arrange
         var tracefileService = new TracefileServiceImpl();
         var writer = mock(TracefileWriter.class);
-        var connectionIdentifier = new ConnectionIdentifier("url");
-        tracefileService.initialize(writer, connectionIdentifier);
+        tracefileService.initialize(writer, "url");
 
         // Act
         tracefileService.fetchAlertLog();
@@ -48,8 +47,7 @@ class TracefileServiceImplTest {
         // Arrange
         var tracefileService = new TracefileServiceImpl();
         var writer = mock(TracefileWriter.class);
-        var connectionIdentifier = new ConnectionIdentifier("url");
-        tracefileService.initialize(writer, connectionIdentifier);
+        tracefileService.initialize(writer, "url");
         doThrow(exception).when(writer).writeFile(anyString(), any(DatabaseFileFetcher.class));
 
         // Act, Assert
@@ -61,8 +59,7 @@ class TracefileServiceImplTest {
         // Arrange
         var tracefileService = new TracefileServiceImpl();
         var writer = mock(TracefileWriter.class);
-        var connectionIdentifier = new ConnectionIdentifier("url");
-        tracefileService.initialize(writer, connectionIdentifier);
+        tracefileService.initialize(writer, "url");
 
         // Act
         tracefileService.fetchTracefile("myFile.trc");
