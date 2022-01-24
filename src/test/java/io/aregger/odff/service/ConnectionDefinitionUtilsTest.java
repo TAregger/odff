@@ -27,7 +27,7 @@ class ConnectionDefinitionUtilsTest {
 
         // Assert
         assertThat(connectionDefinition).isPresent();
-        assertThat(connectionDefinition.get().alias()).isEqualTo("OCDB1");
+        assertThat(connectionDefinition.get().name()).isEqualTo("OCDB1");
         assertThat(connectionDefinition.get().validate()).isEmpty();
 
     }
@@ -79,7 +79,7 @@ class ConnectionDefinitionUtilsTest {
 
         // Assert
         assertThat(connectionDefinition).isPresent();
-        assertThat(connectionDefinition.get().alias()).isEqualTo("OCDB1");
+        assertThat(connectionDefinition.get().name()).isEqualTo("OCDB1");
         assertThat(connectionDefinition.get().password()).isEqualTo("newpass");
     }
 
@@ -90,7 +90,7 @@ class ConnectionDefinitionUtilsTest {
 
         // Assert
         assertThat(connectionDefinition).isPresent();
-        assertThat(connectionDefinition.get().alias()).isEqualTo("OCDB4");
+        assertThat(connectionDefinition.get().name()).isEqualTo("OCDB4");
         assertThat(connectionDefinition.get().password()).isEqualTo("newpass");
         assertThat(connectionDefinition.get().validate()).isEmpty();
     }

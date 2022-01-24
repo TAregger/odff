@@ -43,11 +43,11 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
         private static class ConnectionFromFileOptions {
             @Option(names = {"-n", "--name"}, description = "Name of the connection to use as defined in the connection definitions",
                 required = true)
-            String connectionAlias;
+            String name;
             @Option(names = {"-c", "--connections"}, description =
                 "File with connection definitions. If not specified the default is \n" + DEFAULT_CONNECTIONS_FILES + " in the the users current working " +
                 "directory")
-            String connectionFileName;
+            String filepath;
             // TODO implement password
             @Option(names = {"-p", "--password"}, description = "Password used to connect", arity = "0..1")
             String password;
@@ -55,8 +55,8 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     }
 
     private static class DiagFileOption {
-        @Option(names = {"-t", "--tracefileName"}, description = "Name of the trace file to fetch")
-        private String tracefileName;
+        @Option(names = {"-t", "--tracefile"}, description = "Name of the trace file to fetch")
+        private String tracefile;
         @Option(names = {"-a", "--alertlog"}, description = "Fetches the alert log instead of a trace file")
         private boolean fetchAlertlog;
     }
@@ -111,7 +111,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
         if (this.diagFileOption.fetchAlertlog) {
             this.tracefileService.fetchAlertLog();
         } else {
-            this.tracefileService.fetchTracefile(this.diagFileOption.tracefileName);
+            this.tracefileService.fetchTracefile(this.diagFileOption.tracefile);
         }
 
         return 0;
@@ -122,16 +122,16 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     }
 
     private Optional<ConnectionDefinition> readConnectionFromFile() {
-        String fileName = getConnectionFileName() != null ? getConnectionFileName() : workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
-        return ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(Path.of(fileName).toFile(), getConnectionAlias());
+        String filepath = getConnectionFilePath() != null ? getConnectionFilePath() : workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
+        return ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(Path.of(filepath).toFile(), getConnectionName());
     }
 
-    private String getConnectionFileName() {
-        return connectionOptions.connectionFromFileOptions.connectionFileName;
+    private String getConnectionFilePath() {
+        return connectionOptions.connectionFromFileOptions.filepath;
     }
 
-    private String getConnectionAlias() {
-        return connectionOptions.connectionFromFileOptions.connectionAlias;
+    private String getConnectionName() {
+        return connectionOptions.connectionFromFileOptions.name;
     }
 
 }

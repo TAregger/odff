@@ -1,6 +1,6 @@
 [
   {
-    "alias": "OCDB1",
+    "name": "OCDB1",
     "tnsString": "localhost:1521/ORCLCDB",
     "username": "scott",
     "password": "tiger"

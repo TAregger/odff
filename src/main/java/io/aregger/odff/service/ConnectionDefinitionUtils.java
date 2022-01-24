@@ -22,9 +22,9 @@ public class ConnectionDefinitionUtils {
         throw new AssertionError("non-instantiable class");
     }
 
-    public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String alias, String password) {
-        return ConnectionFileReader.getConnectionFromFile(file, alias).map(c -> {
-            var connectionWithProvidedPassword = new ConnectionDefinition(c.alias(), c.tnsString(), c.username(), password);
+    public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String name, String password) {
+        return ConnectionFileReader.getConnectionFromFile(file, name).map(c -> {
+            var connectionWithProvidedPassword = new ConnectionDefinition(c.name(), c.tnsString(), c.username(), password);
             boolean valid = ConnectionDefinitionUtils.validate(connectionWithProvidedPassword);
             if (!valid) {
                 return null;
@@ -34,8 +34,8 @@ public class ConnectionDefinitionUtils {
         });
     }
 
-    public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String alias) {
-        return ConnectionFileReader.getConnectionFromFile(file, alias).map(c -> {
+    public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String name) {
+        return ConnectionFileReader.getConnectionFromFile(file, name).map(c -> {
             boolean valid = ConnectionDefinitionUtils.validate(c);
             if (!valid) {
                 return null;
@@ -49,14 +49,14 @@ public class ConnectionDefinitionUtils {
         boolean result = true;
         List<String> validationErrors = connectionDefinition.validate();
         if (!validationErrors.isEmpty()) {
-            logError(connectionDefinition.alias(), validationErrors);
+            logError(connectionDefinition.name(), validationErrors);
             result = false;
         }
         return result;
     }
 
-    private static void logError(String connectionAlias, List<String> validationErrors) {
-        String logMessage = String.format("Connection with alias %s has the following errors: ", connectionAlias)
+    private static void logError(String name, List<String> validationErrors) {
+        String logMessage = String.format("Connection with name %s has the following errors: ", name)
                             + String.join(", ", validationErrors) + '.';
         log.error(logMessage);
     }
@@ -64,20 +64,20 @@ public class ConnectionDefinitionUtils {
     private static class ConnectionFileReader {
         private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-        private static Optional<ConnectionDefinition> getConnectionFromFile(File file, String alias) {
-            requireNonNull(alias, "'alias' must not be null");
+        private static Optional<ConnectionDefinition> getConnectionFromFile(File file, String name) {
+            requireNonNull(name, "'name' must not be null");
             List<ConnectionDefinition> connectionDefinitions = read(file);
             if (connectionDefinitions == null) {
                 return Optional.empty();
             }
-            List<ConnectionDefinition> connectionDefinitionsForAlias = connectionDefinitions.stream().filter(c -> alias.equals(c.alias())).toList();
-            if (connectionDefinitionsForAlias.size() == 1) {
-                return Optional.of(connectionDefinitionsForAlias.get(0));
-            } else if (connectionDefinitionsForAlias.size() == 0) {
-                log.error("Connection with name '{}' not found in file {}.", alias, file.getAbsoluteFile().toString());
+            List<ConnectionDefinition> connectionDefinitionsForName = connectionDefinitions.stream().filter(c -> name.equals(c.name())).toList();
+            if (connectionDefinitionsForName.size() == 1) {
+                return Optional.of(connectionDefinitionsForName.get(0));
+            } else if (connectionDefinitionsForName.size() == 0) {
+                log.error("Connection with name '{}' not found in file {}.", name, file.getAbsoluteFile().toString());
                 return Optional.empty();
             } else {
-                log.error("More than 1 connection with name '{}' found in file {}.", alias, file.getAbsoluteFile().toString());
+                log.error("More than 1 connection with name '{}' found in file {}.", name, file.getAbsoluteFile().toString());
                 return Optional.empty();
             }
         }

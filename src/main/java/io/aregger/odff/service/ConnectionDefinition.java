@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public record ConnectionDefinition(String alias, String tnsString, String username, String password) {
+public record ConnectionDefinition(String name, String tnsString, String username, String password) {
 
     public String buildJdbcConnectionString() {
         return "jdbc:oracle:thin:" + username + "/" + password + "@" + tnsString;
@@ -12,8 +12,8 @@ public record ConnectionDefinition(String alias, String tnsString, String userna
 
     public List<String> validate() {
         List<String> result = new ArrayList<>();
-        if (alias == null || alias.length() == 0) {
-            result.add("alias not present");
+        if (name == null || name.length() == 0) {
+            result.add("name not present");
         }
         if (tnsString == null || tnsString.length() == 0) {
             result.add("tnsString not present");

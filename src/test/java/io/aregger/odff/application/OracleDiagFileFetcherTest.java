@@ -47,7 +47,7 @@ class OracleDiagFileFetcherTest {
     @Test
     void testFetchTracefile() {
         // Arrange
-        String[] args = new String[]{"--url=url", "--tracefileName=myFile.trc"};
+        String[] args = new String[]{"--url=url", "--tracefile=myFile.trc"};
 
         // Act
         int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
@@ -62,7 +62,7 @@ class OracleDiagFileFetcherTest {
     @Test
     void testFetchTracefileNoFilenameProvided() {
         // Arrange
-        String[] args = new String[]{"--url=url", "--tracefileName"};
+        String[] args = new String[]{"--url=url", "--tracefile"};
 
         // Act
         int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
