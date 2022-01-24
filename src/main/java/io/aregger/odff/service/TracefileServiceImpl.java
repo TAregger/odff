@@ -2,6 +2,7 @@ package io.aregger.odff.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -51,7 +52,7 @@ public class TracefileServiceImpl implements TracefileService {
     }
 
     private interface Runnable {
-        void run() throws IOException;
+        void run() throws IOException, CannotGetJdbcConnectionException;
     }
 
     private void fetchAndHandleExceptions(Runnable runnable) {
@@ -63,6 +64,9 @@ public class TracefileServiceImpl implements TracefileService {
             String message = "Exception writing file.";
             log.error(message, e);
             throw new TracefileServiceException(message, e);
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error(e.getMessage());
+            log.debug("Stacktrace", e);
         }
 
     }
