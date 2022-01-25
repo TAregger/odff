@@ -1,5 +1,6 @@
 package io.aregger.odff.application;
 
+import io.aregger.odff.service.PasswordReader;
 import io.aregger.odff.service.TracefileService;
 import io.aregger.odff.service.TracefileServiceException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,21 +13,25 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 class OracleDiagFileFetcherTest {
 
     private TracefileService tracefileService;
     private OracleDiagFileFetcher fetcher;
+    private PasswordReader passwordReader;
 
     @BeforeEach
     void setUp() {
         this.tracefileService = mock(TracefileService.class);
-        this.fetcher = new OracleDiagFileFetcher(tracefileService, mock(Path.class));
+        this.passwordReader = mock(PasswordReader.class);
+        this.fetcher = new OracleDiagFileFetcher(tracefileService, this.passwordReader, mock(Path.class));
     }
 
     @Test
@@ -132,7 +137,7 @@ class OracleDiagFileFetcherTest {
         // Arrange
         String[] args = new String[]{"--name=OCDB1", "--alertlog"};
         File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
-        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, connectionDefinitions.getParentFile().toPath());
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, this.passwordReader, connectionDefinitions.getParentFile().toPath());
 
         // Act
         int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
@@ -149,7 +154,7 @@ class OracleDiagFileFetcherTest {
         // Arrange
         String[] args = new String[]{"--name=OCDBx", "--alertlog"};
         File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
-        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, connectionDefinitions.getParentFile().toPath());
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, this.passwordReader, connectionDefinitions.getParentFile().toPath());
 
         // Act
         int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
@@ -171,6 +176,43 @@ class OracleDiagFileFetcherTest {
         // Assert
         assertThat(exitCode).isEqualTo(1);
         verifyNoInteractions(tracefileService);
+    }
+
+    @Test
+    void testConnectionNameWithPasswordAsArgument() throws IOException {
+        // Arrange
+        String[] args = new String[]{"--name=OCDB1", "--password=secret", "--alertlog"};
+        File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, this.passwordReader, connectionDefinitions.getParentFile().toPath());
+
+        // Act
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
+
+        // Assert
+        assertThat(exitCode).isEqualTo(0);
+        verify(tracefileService).initialize(any(), eq("jdbc:oracle:thin:scott/secret@localhost:1521/ORCLCDB"));
+        verify(tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(tracefileService);
+        verifyNoInteractions(passwordReader);
+    }
+
+    @Test
+    void testConnectionNameWithPasswordOnPrompt() throws IOException {
+        // Arrange
+        String[] args = new String[]{"--name=OCDB1", "--password", "--alertlog"};
+        File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, this.passwordReader, connectionDefinitions.getParentFile().toPath());
+        when(passwordReader.readPassword()).thenReturn("secret");
+
+        // Act
+        int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
+
+        // Assert
+        assertThat(exitCode).isEqualTo(0);
+        verify(tracefileService).initialize(any(), eq("jdbc:oracle:thin:scott/secret@localhost:1521/ORCLCDB"));
+        verify(tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(tracefileService);
+        verify(passwordReader).readPassword();
     }
 
 }
