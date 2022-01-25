@@ -9,9 +9,9 @@ import java.lang.invoke.MethodHandles;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 
-public class FileUtils {
+public final class FileUtils {
 
-    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
     private FileUtils() {
         throw new AssertionError("Non-instantiable class");
@@ -22,7 +22,7 @@ public class FileUtils {
         boolean fileExists = !file.createNewFile();
         if (fileExists) {
             String msg = String.format("File %s already exists. Please rename it and try again.", file);
-            log.error(msg);
+            logger.error(msg);
             throw new FileAlreadyExistsException(msg);
         }
         return file;

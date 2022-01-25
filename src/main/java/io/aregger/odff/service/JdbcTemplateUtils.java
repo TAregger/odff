@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.SQLException;
 
-class JdbcTemplateUtils {
+final class JdbcTemplateUtils {
 
     private JdbcTemplateUtils() {
         throw new AssertionError("non-instantiable class");

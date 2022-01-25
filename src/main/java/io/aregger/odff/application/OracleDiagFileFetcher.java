@@ -28,17 +28,17 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     private static final String DEFAULT_CONNECTIONS_FILES = "connections.json";
 
     @ArgGroup(multiplicity = "1")
-    ConnectionOptions connectionOptions;
+    private ConnectionOptions connectionOptions;
 
     @ArgGroup(multiplicity = "1")
-    DiagFileOption diagFileOption;
+    private DiagFileOption diagFileOption;
 
     private static class ConnectionOptions {
         @Option(names = {"-u", "--url"}, description = "JDBC connection string")
         private String url;
 
         @ArgGroup(exclusive = false)
-        ConnectionFromFileOptions connectionFromFileOptions;
+        private ConnectionFromFileOptions connectionFromFileOptions;
 
         private static class ConnectionFromFileOptions {
             @Option(names = {"-n", "--name"}, description = "Name of the connection to use as defined in the connection definitions",
@@ -102,14 +102,14 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     private int doCall() {
         String url;
         if (isUrlArgumentProvided()) {
-            url = connectionOptions.url;
+            url = this.connectionOptions.url;
         } else {
             url = buildUrlFromConnectionDefinitions();
             if (url == null) {
                 return 1;
             }
         }
-        this.tracefileService.initialize(new TracefileWriter(workingDir), url);
+        this.tracefileService.initialize(new TracefileWriter(this.workingDir), url);
         if (this.diagFileOption.fetchAlertlog) {
             this.tracefileService.fetchAlertLog();
         } else {
@@ -125,7 +125,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
 
     private Optional<ConnectionDefinition> getConnectionDefinition() {
         if (isPasswordOptionProvided()) {
-            String password = isPasswordProvidedAsArgument() ? getPassword() : passwordReader.readPassword();
+            String password = isPasswordProvidedAsArgument() ? getPassword() : this.passwordReader.readPassword();
             return password == null ? Optional.empty() : readConnectionFromFile(password);
         } else {
             return readConnectionFromFile();
@@ -141,29 +141,29 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     }
 
     private Optional<ConnectionDefinition> readConnectionFromFile() {
-        String filepath = getConnectionFilePath() != null ? getConnectionFilePath() : workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
+        String filepath = getConnectionFilePath() != null ? getConnectionFilePath() : this.workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
         return ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(Path.of(filepath).toFile(), getConnectionName());
     }
 
     private Optional<ConnectionDefinition> readConnectionFromFile(String password) {
-        String filepath = getConnectionFilePath() != null ? getConnectionFilePath() : workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
+        String filepath = getConnectionFilePath() != null ? getConnectionFilePath() : this.workingDir.resolve(DEFAULT_CONNECTIONS_FILES).toFile().toString();
         return ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(Path.of(filepath).toFile(), getConnectionName(), password);
     }
 
     private boolean isUrlArgumentProvided() {
-        return connectionOptions.url != null;
+        return this.connectionOptions.url != null;
     }
 
     private String getPassword() {
-        return connectionOptions.connectionFromFileOptions.password;
+        return this.connectionOptions.connectionFromFileOptions.password;
     }
 
     private String getConnectionFilePath() {
-        return connectionOptions.connectionFromFileOptions.filepath;
+        return this.connectionOptions.connectionFromFileOptions.filepath;
     }
 
     private String getConnectionName() {
-        return connectionOptions.connectionFromFileOptions.name;
+        return this.connectionOptions.connectionFromFileOptions.name;
     }
 
 }

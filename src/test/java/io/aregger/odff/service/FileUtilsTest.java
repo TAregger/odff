@@ -25,7 +25,7 @@ class FileUtilsTest {
     @Test
     void createFileAlreadyExists(@TempDir Path tempDir) throws IOException {
         // Arrange
-        File file = FileUtils.createFile(tempDir, "myFile.trc");
+        FileUtils.createFile(tempDir, "myFile.trc");
 
         // Act, Assert
         assertThrows(FileAlreadyExistsException.class, () -> FileUtils.createFile(tempDir, "myFile.trc"));

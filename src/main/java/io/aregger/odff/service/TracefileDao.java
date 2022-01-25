@@ -24,13 +24,13 @@ class TracefileDao {
     }
 
     void fetchTracefile(String tracefile, Consumer<String> tracefileLineConsumer) {
-        jdbc.query(SELECT_TRACEFILE_PAYLOAD, rs -> {
+        this.jdbc.query(SELECT_TRACEFILE_PAYLOAD, rs -> {
             tracefileLineConsumer.accept(rs.getString("payload"));
         }, tracefile);
     }
 
     void fetchAlertlog(Consumer<String> tracefileLineConsumer) {
-        jdbc.query(SELECT_ALERTLOG_PAYLOAD, rs -> {
+        this.jdbc.query(SELECT_ALERTLOG_PAYLOAD, rs -> {
             tracefileLineConsumer.accept(rs.getString("message_text"));
         });
     }

@@ -35,7 +35,7 @@ public class PasswordReader {
         return pass == null ? null : new String(pass);
     }
 
-    private boolean isEmpty(String password) {
+    private static boolean isEmpty(String password) {
         return (password != null && password.trim().length() == 0);
     }
 

@@ -31,7 +31,7 @@ class OracleDiagFileFetcherTest {
     void setUp() {
         this.tracefileService = mock(TracefileService.class);
         this.passwordReader = mock(PasswordReader.class);
-        this.fetcher = new OracleDiagFileFetcher(tracefileService, this.passwordReader, mock(Path.class));
+        this.fetcher = new OracleDiagFileFetcher(this.tracefileService, this.passwordReader, mock(Path.class));
     }
 
     @Test
@@ -44,9 +44,9 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
-        verify(tracefileService).initialize(any(), any());
-        verify(tracefileService).fetchAlertLog();
-        verifyNoMoreInteractions(tracefileService);
+        verify(this.tracefileService).initialize(any(), any());
+        verify(this.tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(this.tracefileService);
     }
 
     @Test
@@ -59,9 +59,9 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
-        verify(tracefileService).initialize(any(), any());
-        verify(tracefileService).fetchTracefile("myFile.trc");
-        verifyNoMoreInteractions(tracefileService);
+        verify(this.tracefileService).initialize(any(), any());
+        verify(this.tracefileService).fetchTracefile("myFile.trc");
+        verifyNoMoreInteractions(this.tracefileService);
     }
 
     @Test
@@ -74,7 +74,7 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
-        verifyNoInteractions(tracefileService);
+        verifyNoInteractions(this.tracefileService);
     }
 
     @Test
@@ -87,7 +87,7 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
-        verifyNoInteractions(tracefileService);
+        verifyNoInteractions(this.tracefileService);
     }
 
     @Test
@@ -100,23 +100,23 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
-        verifyNoInteractions(tracefileService);
+        verifyNoInteractions(this.tracefileService);
     }
 
     @Test
     void testFileExists() {
         // Arrange
         String[] args = new String[]{"--url=url", "--alertlog"};
-        doThrow(TracefileServiceException.class).when(tracefileService).fetchAlertLog();
+        doThrow(TracefileServiceException.class).when(this.tracefileService).fetchAlertLog();
 
         // Act
         int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(1);
-        verify(tracefileService).initialize(any(), any());
-        verify(tracefileService).fetchAlertLog();
-        verifyNoMoreInteractions(tracefileService);
+        verify(this.tracefileService).initialize(any(), any());
+        verify(this.tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(this.tracefileService);
     }
 
     @Test
@@ -129,7 +129,7 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(2);
-        verifyNoInteractions(tracefileService);
+        verifyNoInteractions(this.tracefileService);
     }
 
     @Test
@@ -144,9 +144,9 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
-        verify(tracefileService).initialize(any(), any());
-        verify(tracefileService).fetchAlertLog();
-        verifyNoMoreInteractions(tracefileService);
+        verify(this.tracefileService).initialize(any(), any());
+        verify(this.tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(this.tracefileService);
     }
 
     @Test
@@ -161,7 +161,7 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(1);
-        verifyNoMoreInteractions(tracefileService);
+        verifyNoMoreInteractions(this.tracefileService);
     }
 
     @Test
@@ -175,7 +175,7 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(1);
-        verifyNoInteractions(tracefileService);
+        verifyNoInteractions(this.tracefileService);
     }
 
     @Test
@@ -190,10 +190,10 @@ class OracleDiagFileFetcherTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
-        verify(tracefileService).initialize(any(), eq("jdbc:oracle:thin:scott/secret@localhost:1521/ORCLCDB"));
-        verify(tracefileService).fetchAlertLog();
-        verifyNoMoreInteractions(tracefileService);
-        verifyNoInteractions(passwordReader);
+        verify(this.tracefileService).initialize(any(), eq("jdbc:oracle:thin:scott/secret@localhost:1521/ORCLCDB"));
+        verify(this.tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(this.tracefileService);
+        verifyNoInteractions(this.passwordReader);
     }
 
     @Test
@@ -202,17 +202,17 @@ class OracleDiagFileFetcherTest {
         String[] args = new String[]{"--name=OCDB1", "--password", "--alertlog"};
         File connectionDefinitions = ResourceUtils.getFile(this.getClass().getResource("/connections.json"));
         this.fetcher = new OracleDiagFileFetcher(this.tracefileService, this.passwordReader, connectionDefinitions.getParentFile().toPath());
-        when(passwordReader.readPassword()).thenReturn("secret");
+        when(this.passwordReader.readPassword()).thenReturn("secret");
 
         // Act
         int exitCode = OracleDiagFileFetcher.main(args, this.fetcher);
 
         // Assert
         assertThat(exitCode).isEqualTo(0);
-        verify(tracefileService).initialize(any(), eq("jdbc:oracle:thin:scott/secret@localhost:1521/ORCLCDB"));
-        verify(tracefileService).fetchAlertLog();
-        verifyNoMoreInteractions(tracefileService);
-        verify(passwordReader).readPassword();
+        verify(this.tracefileService).initialize(any(), eq("jdbc:oracle:thin:scott/secret@localhost:1521/ORCLCDB"));
+        verify(this.tracefileService).fetchAlertLog();
+        verifyNoMoreInteractions(this.tracefileService);
+        verify(this.passwordReader).readPassword();
     }
 
 }

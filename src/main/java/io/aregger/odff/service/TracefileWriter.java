@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
 
 public class TracefileWriter {
 
-    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
 
     private final Path currentDir;
@@ -29,19 +29,19 @@ public class TracefileWriter {
     }
 
     void writeFile(String tracefileName, DatabaseFileFetcher fetcher) throws UncheckedIOException, IOException {
-        File file = FileUtils.createFile(currentDir, tracefileName);
+        File file = FileUtils.createFile(this.currentDir, tracefileName);
         try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             fetcher.fetchTracefile(writeLine(outputStream));
         } finally {
             if (file.length() == 0) {
-                // If no rows are returned by the database, e.g. because an non-existent tracefile was specified by the user,
+                // If no rows are returned by the database, e.g. because a non-existent tracefile was specified by the user,
                 // the file is empty and should be deleted.
                 file.delete();
             }
         }
 
         if (file.length() != 0) {
-            log.info("{} bytes written to file {}", NUMBER_FORMAT.format(file.length()), file.getAbsolutePath());
+            logger.info("{} bytes written to file {}", NUMBER_FORMAT.format(file.length()), file.getAbsolutePath());
         }
     }
 

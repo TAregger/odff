@@ -14,11 +14,11 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class ConnectionDefinitionUtils {
+public final class ConnectionDefinitionUtils {
 
-    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
-    public ConnectionDefinitionUtils() {
+    private ConnectionDefinitionUtils() {
         throw new AssertionError("non-instantiable class");
     }
 
@@ -58,7 +58,7 @@ public class ConnectionDefinitionUtils {
     private static void logError(String name, List<String> validationErrors) {
         String logMessage = String.format("Connection with name %s has the following errors: ", name)
                             + String.join(", ", validationErrors) + '.';
-        log.error(logMessage);
+        logger.error(logMessage);
     }
 
     private static class ConnectionFileReader {
@@ -74,10 +74,10 @@ public class ConnectionDefinitionUtils {
             if (connectionDefinitionsForName.size() == 1) {
                 return Optional.of(connectionDefinitionsForName.get(0));
             } else if (connectionDefinitionsForName.size() == 0) {
-                log.error("Connection with name '{}' not found in file {}.", name, file.getAbsoluteFile().toString());
+                logger.error("Connection with name '{}' not found in file {}.", name, file.getAbsoluteFile().toString());
                 return Optional.empty();
             } else {
-                log.error("More than 1 connection with name '{}' found in file {}.", name, file.getAbsoluteFile().toString());
+                logger.error("More than 1 connection with name '{}' found in file {}.", name, file.getAbsoluteFile().toString());
                 return Optional.empty();
             }
         }
@@ -86,12 +86,12 @@ public class ConnectionDefinitionUtils {
             try {
                 return OBJECT_MAPPER.readValue(file, new TypeReference<>() {});
             } catch (JsonParseException e) {
-                log.error("Error reading connections file. {}", e.getMessage());
-                log.debug("Stacktrace:", e);
+                logger.error("Error reading connections file. {}", e.getMessage());
+                logger.debug("Stacktrace:", e);
                 return null;
             } catch (IOException e) {
-                log.error("Error reading connections file. {}", e.getMessage());
-                log.debug("Stacktrace:", e);
+                logger.error("Error reading connections file. {}", e.getMessage());
+                logger.debug("Stacktrace:", e);
                 return null;
             }
 

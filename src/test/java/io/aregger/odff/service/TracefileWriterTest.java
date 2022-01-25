@@ -52,7 +52,7 @@ class TracefileWriterTest {
     @Test
     void writeFileExists() throws IOException {
         // Arrange
-        tempDir.resolve("myFile.trc").toFile().createNewFile();
+        this.tempDir.resolve("myFile.trc").toFile().createNewFile();
 
         // Act, Assert
         assertThrows(FileAlreadyExistsException.class, () -> this.writer.writeFile("myFile.trc", tracefileLineConsumer -> {}));

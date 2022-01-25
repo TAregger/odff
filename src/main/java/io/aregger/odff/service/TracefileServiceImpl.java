@@ -12,7 +12,8 @@ import java.nio.file.FileAlreadyExistsException;
 import static java.util.Objects.requireNonNull;
 
 public class TracefileServiceImpl implements TracefileService {
-    private static final Logger log = LogManager.getLogger(MethodHandles.lookup().lookupClass());
+
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
     private TracefileWriter tracefileWriter;
     private TracefileDao tracefileDao;
@@ -27,10 +28,10 @@ public class TracefileServiceImpl implements TracefileService {
     public void fetchTracefile(String tracefileName) {
         validateIsInitialized();
         requireNonNull(tracefileName, "'tracefileName' must not be null");
-        log.info("Start fetching tracefile {}", tracefileName);
+        logger.info("Start fetching tracefile {}", tracefileName);
         fetchAndHandleExceptions(() -> {
-            tracefileWriter.writeFile(tracefileName, new TracefileFetcher(tracefileName, this.tracefileDao));
-            log.info("Finished fetching tracefile {}", tracefileName);
+            this.tracefileWriter.writeFile(tracefileName, new TracefileFetcher(tracefileName, this.tracefileDao));
+            logger.info("Finished fetching tracefile {}", tracefileName);
         });
     }
 
@@ -38,10 +39,10 @@ public class TracefileServiceImpl implements TracefileService {
     public void fetchAlertLog() {
         validateIsInitialized();
         String filename = "alert.log";
-        log.info("Start fetching alertlog {}", filename);
+        logger.info("Start fetching alertlog {}", filename);
         fetchAndHandleExceptions(() -> {
-            tracefileWriter.writeFile(filename, new AlertlogFetcher(this.tracefileDao));
-            log.info("Finished fetching alertlog {}", filename);
+            this.tracefileWriter.writeFile(filename, new AlertlogFetcher(this.tracefileDao));
+            logger.info("Finished fetching alertlog {}", filename);
         });
     }
 
@@ -55,18 +56,18 @@ public class TracefileServiceImpl implements TracefileService {
         void run() throws IOException, CannotGetJdbcConnectionException;
     }
 
-    private void fetchAndHandleExceptions(Runnable runnable) {
+    private static void fetchAndHandleExceptions(Runnable runnable) {
         try {
             runnable.run();
         } catch (FileAlreadyExistsException e) {
             throw new TracefileServiceException(e);
         } catch(UncheckedIOException | IOException e) {
             String message = "Exception writing file.";
-            log.error(message, e);
+            logger.error(message, e);
             throw new TracefileServiceException(message, e);
         } catch (CannotGetJdbcConnectionException e) {
-            log.error(e.getMessage());
-            log.debug("Stacktrace", e);
+            logger.error(e.getMessage());
+            logger.debug("Stacktrace", e);
         }
 
     }
