@@ -12,6 +12,10 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
+        <maven-surefire.version>3.0.0-M5</maven-surefire.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+        <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+
         <spring.boot.version>2.6.2</spring.boot.version>
         <spring.version>5.3.14</spring.version>
         <ojdbc11.version>21.1.0.0</ojdbc11.version>
@@ -20,7 +24,6 @@
         <junit.version>5.8.2</junit.version>
         <mockito.version>4.2.0</mockito.version>
         <assertj.version>3.22.0</assertj.version>
-        <maven-surefire.version>3.0.0-M5</maven-surefire.version>
         <jackson.version>2.13.1</jackson.version>
     </properties>
 
@@ -125,6 +128,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -140,6 +144,27 @@
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/zip.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
                 </executions>
