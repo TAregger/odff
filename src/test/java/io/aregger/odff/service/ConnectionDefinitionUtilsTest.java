@@ -23,7 +23,7 @@ class ConnectionDefinitionUtilsTest {
     @Test
     void getValidConnectionDefinitionFromFile() {
         // Act
-        Optional<ConnectionDefinition> connectionDefinition = ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB1");
+        Optional<ConnectionDefinition> connectionDefinition = ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "ocdb1");
 
         // Assert
         assertThat(connectionDefinition).isPresent();

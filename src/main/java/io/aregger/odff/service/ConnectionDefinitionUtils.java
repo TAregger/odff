@@ -70,7 +70,7 @@ public final class ConnectionDefinitionUtils {
             if (connectionDefinitions == null) {
                 return Optional.empty();
             }
-            List<ConnectionDefinition> connectionDefinitionsForName = connectionDefinitions.stream().filter(c -> name.equals(c.name())).toList();
+            List<ConnectionDefinition> connectionDefinitionsForName = connectionDefinitions.stream().filter(c -> name.equalsIgnoreCase(c.name())).toList();
             if (connectionDefinitionsForName.size() == 1) {
                 return Optional.of(connectionDefinitionsForName.get(0));
             } else if (connectionDefinitionsForName.size() == 0) {
