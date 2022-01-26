@@ -7,7 +7,7 @@ Type `odff -h` to show the usage
 Usage: odff [-hV] (-u=<url> | [-n=<name> [-c=<filepath>] [-p[=<password>]]]) (-t=<tracefile> | -a)
 Oracle Diag File Fetcher.
 Fetches alert logs and trace files from Oracle databases.
-  -u, --url=<url>                JDBC connection string
+  -u, --url=<url>                JDBC connection string without sub-protocol (e.g. "scott/tiger@localhost:1521/ORCLCDB")
   -n, --name=<name>              Name of the connection to use as defined in the connection definitions
   -c, --connections=<filepath>   File with connection definitions. If not specified the default is
                                  connections.json in the the users current working directory
@@ -23,12 +23,12 @@ odff supports fetching alert logs and trace files.
 
 Fetch alertlog example
 ```bash
-odff --url="jdbc:oracle:thin:scott/tiger@localhost:1521/ORCLCDB" --alertlog
+odff --url="scott/tiger@localhost:1521/ORCLCDB" --alertlog
 ```
 
 Fetch tracefile example
 ```bash
-odff --url="jdbc:oracle:thin:scott/tiger@localhost:1521/ORCLCDB" --tracefile=ORCLCDB_ora_2932.trc
+odff --url="scott/tiger@localhost:1521/ORCLCDB" --tracefile=ORCLCDB_ora_2932.trc
 ```
 
 The alert log can also be fetched with `--tracefile` by providing the correct name of the alert log. The difference
@@ -40,6 +40,8 @@ from `<adr_home>/trace/alert_<instance>.log`
 ### Providing connection data
 The target database to fetch from can be either provided directly on the command line with `--url` or by referring to a
 name (`--name`) of a connection defined in a separate file.
+
+When providing the url directly, it must contain username and password but should not specify the sub-protocol (`jdbc:oracle:thin`).
 
 #### Connection definitions file format
 The file with the connection definitions is in JSON format and contains one or more connection definitions. All attributes except `password`

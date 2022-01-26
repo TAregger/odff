@@ -6,8 +6,10 @@ import java.util.List;
 
 public record ConnectionDefinition(String name, String tnsString, String username, String password) {
 
+    public static final String ORACLE_THIN_SUBPROTOCOL = "jdbc:oracle:thin:";
+
     public String buildJdbcConnectionString() {
-        return "jdbc:oracle:thin:" + this.username + "/" + this.password + "@" + this.tnsString;
+        return ORACLE_THIN_SUBPROTOCOL + this.username + "/" + this.password + "@" + this.tnsString;
     }
 
     public List<String> validate() {

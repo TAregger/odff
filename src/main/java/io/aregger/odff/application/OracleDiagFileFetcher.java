@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import static io.aregger.odff.service.ConnectionDefinition.ORACLE_THIN_SUBPROTOCOL;
 import static picocli.CommandLine.ArgGroup;
 import static picocli.CommandLine.Command;
 import static picocli.CommandLine.Option;
@@ -34,7 +35,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     private DiagFileOption diagFileOption;
 
     private static class ConnectionOptions {
-        @Option(names = {"-u", "--url"}, description = "JDBC connection string")
+        @Option(names = {"-u", "--url"}, description = "JDBC connection string without sub-protocol (e.g. \"scott/tiger@localhost:1521/ORCLCDB\")")
         private String url;
 
         @ArgGroup(exclusive = false)
@@ -102,7 +103,7 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     private int doCall() {
         String url;
         if (isUrlArgumentProvided()) {
-            url = this.connectionOptions.url;
+            url = this.connectionOptions.url.startsWith(ORACLE_THIN_SUBPROTOCOL) ? this.connectionOptions.url : ORACLE_THIN_SUBPROTOCOL + this.connectionOptions.url;
         } else {
             url = buildUrlFromConnectionDefinitions();
             if (url == null) {
