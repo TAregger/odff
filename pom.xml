@@ -6,7 +6,11 @@
 
     <groupId>io.aregger</groupId>
     <artifactId>odff</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/TAregger/odff.git</developerConnection>
+    </scm>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
