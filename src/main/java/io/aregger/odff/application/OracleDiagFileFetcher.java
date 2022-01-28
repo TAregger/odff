@@ -20,7 +20,7 @@ import static picocli.CommandLine.Mixin;
 @CommandLine.Command(
     name = "odff",
     description = "Oracle Diag File Fetcher.%nFetches alert logs and trace files from Oracle databases.",
-    version = "0.1.0",
+    version = "0.1.1-SNAPSHOT",
     mixinStandardHelpOptions=true,
     sortOptions = false,
     usageHelpWidth = 125)
