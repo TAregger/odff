@@ -2,12 +2,8 @@ package io.aregger.odff.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.FileAlreadyExistsException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -53,22 +49,14 @@ public class TracefileServiceImpl implements TracefileService {
     }
 
     private interface Runnable {
-        void run() throws IOException, CannotGetJdbcConnectionException;
+        void run() throws Exception;
     }
 
     private static void fetchAndHandleExceptions(Runnable runnable) {
         try {
             runnable.run();
-        } catch (FileAlreadyExistsException e) {
-            throw new TracefileServiceException(e);
-        } catch(UncheckedIOException | IOException e) {
-            String message = "Exception writing file.";
-            logger.error(message, e);
-            throw new TracefileServiceException(message, e);
-        } catch (CannotGetJdbcConnectionException e) {
-            logger.error(e.getMessage());
-            logger.debug("Stacktrace", e);
+        } catch(Exception e) {
+            throw new TracefileServiceException(e.getMessage(), e);
         }
-
     }
 }

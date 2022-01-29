@@ -3,12 +3,10 @@ package io.aregger.odff.service;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,49 +14,28 @@ import static java.util.Objects.requireNonNull;
 
 public final class ConnectionDefinitionUtils {
 
-    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
-
     private ConnectionDefinitionUtils() {
         throw new AssertionError("non-instantiable class");
     }
 
     public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String name, String password) {
-        return ConnectionFileReader.getConnectionFromFile(file, name).map(c -> {
-            var connectionWithProvidedPassword = new ConnectionDefinition(c.name(), c.tnsString(), c.username(), password);
-            boolean valid = ConnectionDefinitionUtils.validate(connectionWithProvidedPassword);
-            if (!valid) {
-                return null;
-            } else {
-                return connectionWithProvidedPassword;
-            }
-        });
+        return ConnectionFileReader.getConnectionFromFile(file, name)
+            .map(c -> new ConnectionDefinition(c.name(), c.tnsString(), c.username(), password))
+            .map(ConnectionDefinitionUtils::validated);
     }
 
     public static Optional<ConnectionDefinition> getValidConnectionDefinitionFromFile(File file, String name) {
-        return ConnectionFileReader.getConnectionFromFile(file, name).map(c -> {
-            boolean valid = ConnectionDefinitionUtils.validate(c);
-            if (!valid) {
-                return null;
-            } else {
-                return c;
-            }
-        });
+        return ConnectionFileReader.getConnectionFromFile(file, name)
+            .map(ConnectionDefinitionUtils::validated);
     }
 
-    private static boolean validate(ConnectionDefinition connectionDefinition) {
-        boolean result = true;
+    private static ConnectionDefinition validated(ConnectionDefinition connectionDefinition) {
         List<String> validationErrors = connectionDefinition.validate();
         if (!validationErrors.isEmpty()) {
-            logError(connectionDefinition.name(), validationErrors);
-            result = false;
+            throw new InvalidConnectionDefinitionFileException(
+                String.format("Connection with name %s has the following errors: ", connectionDefinition.name()) + String.join(", ", validationErrors) + '.');
         }
-        return result;
-    }
-
-    private static void logError(String name, List<String> validationErrors) {
-        String logMessage = String.format("Connection with name %s has the following errors: ", name)
-                            + String.join(", ", validationErrors) + '.';
-        logger.error(logMessage);
+        return connectionDefinition;
     }
 
     private static class ConnectionFileReader {
@@ -74,11 +51,9 @@ public final class ConnectionDefinitionUtils {
             if (connectionDefinitionsForName.size() == 1) {
                 return Optional.of(connectionDefinitionsForName.get(0));
             } else if (connectionDefinitionsForName.size() == 0) {
-                logger.error("Connection with name '{}' not found in file {}.", name, file.getAbsoluteFile().toString());
                 return Optional.empty();
             } else {
-                logger.error("More than 1 connection with name '{}' found in file {}.", name, file.getAbsoluteFile().toString());
-                return Optional.empty();
+                throw new InvalidConnectionDefinitionFileException("More than 1 connection with name " + name + " found in file " + file.getAbsoluteFile() + ".");
             }
         }
 
@@ -86,13 +61,9 @@ public final class ConnectionDefinitionUtils {
             try {
                 return OBJECT_MAPPER.readValue(file, new TypeReference<>() {});
             } catch (JsonParseException e) {
-                logger.error("Error reading connections file. {}", e.getMessage());
-                logger.debug("Stacktrace:", e);
-                return null;
+                throw new InvalidConnectionDefinitionFileException("Error reading connections file. " + e.getMessage(), e);
             } catch (IOException e) {
-                logger.error("Error reading connections file. {}", e.getMessage());
-                logger.debug("Stacktrace:", e);
-                return null;
+                throw new UncheckedIOException("Error reading connections file. + " + e.getMessage(), e);
             }
 
         }

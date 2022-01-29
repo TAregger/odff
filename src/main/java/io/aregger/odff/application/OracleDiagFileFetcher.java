@@ -4,11 +4,13 @@ import io.aregger.odff.service.ConnectionDefinition;
 import io.aregger.odff.service.ConnectionDefinitionUtils;
 import io.aregger.odff.service.PasswordReader;
 import io.aregger.odff.service.TracefileService;
-import io.aregger.odff.service.TracefileServiceException;
 import io.aregger.odff.service.TracefileServiceImpl;
 import io.aregger.odff.service.TracefileWriter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -25,6 +27,8 @@ import static picocli.CommandLine.Mixin;
     sortOptions = false,
     usageHelpWidth = 125)
 public class OracleDiagFileFetcher implements Callable<Integer> {
+
+    private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 
     @Mixin
     private OracleDiagFileFetcherCliOptions options;
@@ -60,21 +64,20 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
-            return doCall();
-        } catch (TracefileServiceException e) {
+            doCall();
+            return 0;
+        } catch (Exception e ) {
+            logger.error(e.getMessage(), e);
             return 1;
         }
     }
 
-    private int doCall() {
+    private void doCall() {
         String url;
         if (this.options.isUrlArgumentProvided()) {
             url = this.options.getUrl().startsWith(ORACLE_THIN_SUBPROTOCOL) ? this.options.getUrl() : ORACLE_THIN_SUBPROTOCOL + this.options.getUrl();
         } else {
-            url = buildUrlFromConnectionDefinitions();
-            if (url == null) {
-                return 1;
-            }
+            url = buildUrlFromConnectionDefinitions().orElseThrow(() -> new IllegalArgumentException("No connection definition found for name " + this.options.getConnectionName()));
         }
 
         this.tracefileService.initialize(new TracefileWriter(this.workingDir), url);
@@ -84,18 +87,19 @@ public class OracleDiagFileFetcher implements Callable<Integer> {
         } else {
             this.tracefileService.fetchTracefile(this.options.getTracefile());
         }
-
-        return 0;
     }
 
-    private String buildUrlFromConnectionDefinitions() {
-        return getConnectionDefinition().map(ConnectionDefinition::buildJdbcConnectionString).orElse(null);
+    private Optional<String> buildUrlFromConnectionDefinitions() {
+        return getConnectionDefinition().map(ConnectionDefinition::buildJdbcConnectionString);
     }
 
     private Optional<ConnectionDefinition> getConnectionDefinition() {
         if (this.options.isPasswordOptionProvided()) {
             String password = this.options.isPasswordProvidedAsArgument() ? this.options.getPassword() : this.passwordReader.readPassword();
-            return password == null ? Optional.empty() : readConnectionFromFile(password);
+            if (password == null) {
+                throw new IllegalArgumentException("No password given");
+            }
+            return readConnectionFromFile(password);
         } else {
             return readConnectionFromFile();
         }

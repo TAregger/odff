@@ -28,7 +28,7 @@ public class TracefileWriter {
         this.currentDir = requireNonNull(currentDir, "'currentDir' must not be null");
     }
 
-    void writeFile(String tracefileName, DatabaseFileFetcher fetcher) throws UncheckedIOException, IOException {
+    void writeFile(String tracefileName, DatabaseFileFetcher fetcher) throws IOException {
         File file = FileUtils.createFile(this.currentDir, tracefileName);
         try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             fetcher.fetchTracefile(writeLine(outputStream));

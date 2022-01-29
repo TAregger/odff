@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ConnectionDefinitionUtilsTest {
 
@@ -34,11 +35,9 @@ class ConnectionDefinitionUtilsTest {
 
     @Test
     void getValidConnectionDefinitionFromFileNotValid() {
-        // Act
-        Optional<ConnectionDefinition> connectionDefinition = ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB2");
-
-        // Assert
-        assertThat(connectionDefinition).isEmpty();
+        // Act, Assert
+        assertThatThrownBy(() -> ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB2"))
+            .isInstanceOf(InvalidConnectionDefinitionFileException.class);
     }
 
     @Test
@@ -52,11 +51,9 @@ class ConnectionDefinitionUtilsTest {
 
     @Test
     void getValidConnectionDefinitionFromFileTooMany() {
-        // Act
-        Optional<ConnectionDefinition> connectionDefinition = ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB3");
-
-        // Assert
-        assertThat(connectionDefinition).isEmpty();
+        // Act, Assert
+        assertThatThrownBy(() -> ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB3"))
+            .isInstanceOf(InvalidConnectionDefinitionFileException.class);
     }
 
     @Test
@@ -65,11 +62,9 @@ class ConnectionDefinitionUtilsTest {
         this.file = ResourceUtils.getFile(this.getClass().getResource("/connections-invalid-json.json"));
         assertThat(this.file).isNotEmpty();
 
-        // Act
-        Optional<ConnectionDefinition> connectionDefinition = ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB3");
-
-        // Assert
-        assertThat(connectionDefinition).isEmpty();
+        // Act, Assert
+        assertThatThrownBy(() -> ConnectionDefinitionUtils.getValidConnectionDefinitionFromFile(this.file, "OCDB3"))
+            .isInstanceOf(InvalidConnectionDefinitionFileException.class);
     }
 
     @Test
