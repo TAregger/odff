@@ -18,25 +18,11 @@ public class PasswordReader {
     /**
      * Returns the password read from the console.
      *
-     * @return the password; or null when the user enters control-D on Unix or control-Z on Windows
+     * @return the password; or null when the user provides an empty password or enters control-D on Unix or control-Z on Windows
      */
     public String readPassword() {
-        String password;
-        String prompt = "Enter password: ";
-        do {
-            password = prompt(prompt);
-            prompt = "Enter password (or hit Ctl-C): ";
-        } while (isEmpty(password));
-        return password;
-    }
-
-    private String prompt(String prompt) {
-        char[] pass = this.reader.apply(prompt);
-        return pass == null ? null : new String(pass);
-    }
-
-    private static boolean isEmpty(String password) {
-        return (password != null && password.trim().length() == 0);
+        char[] pass = this.reader.apply("Enter password: ");
+        return pass == null || pass.length == 0 ? null : new String(pass);
     }
 
 }
