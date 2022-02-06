@@ -63,7 +63,7 @@ public final class ConnectionDefinitionUtils {
             } catch (JsonParseException e) {
                 throw new InvalidConnectionDefinitionFileException("Error reading connections file. " + e.getMessage(), e);
             } catch (IOException e) {
-                throw new UncheckedIOException("Error reading connections file. + " + e.getMessage(), e);
+                throw new UncheckedIOException("Error reading connections file. " + e.getMessage(), e);
             }
 
         }
