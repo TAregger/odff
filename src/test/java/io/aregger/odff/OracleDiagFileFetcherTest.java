@@ -1,8 +1,9 @@
-package io.aregger.odff.application;
+package io.aregger.odff;
 
-import io.aregger.odff.service.PasswordReader;
-import io.aregger.odff.service.TracefileService;
-import io.aregger.odff.service.TracefileServiceException;
+import io.aregger.odff.OracleDiagFileFetcher;
+import io.aregger.odff.PasswordReader;
+import io.aregger.odff.TracefileService;
+import io.aregger.odff.TracefileServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;

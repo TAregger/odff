@@ -1,6 +1,6 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
-public class InvalidConnectionDefinitionFileException extends RuntimeException {
+class InvalidConnectionDefinitionFileException extends RuntimeException {
 
     public InvalidConnectionDefinitionFileException(String message) {
         super(message);

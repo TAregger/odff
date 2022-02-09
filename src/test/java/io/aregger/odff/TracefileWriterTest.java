@@ -1,5 +1,6 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
+import io.aregger.odff.TracefileWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

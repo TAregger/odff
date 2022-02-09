@@ -1,5 +1,8 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
+import io.aregger.odff.ConnectionDefinition;
+import io.aregger.odff.ConnectionDefinitionUtils;
+import io.aregger.odff.InvalidConnectionDefinitionFileException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;

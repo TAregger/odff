@@ -1,11 +1,11 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 
-public final class FileUtils {
+final class FileUtils {
 
     private FileUtils() {
         throw new AssertionError("Non-instantiable class");

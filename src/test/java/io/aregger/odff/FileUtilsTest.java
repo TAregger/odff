@@ -1,5 +1,6 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
+import io.aregger.odff.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

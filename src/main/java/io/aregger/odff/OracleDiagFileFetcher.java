@@ -1,11 +1,5 @@
-package io.aregger.odff.application;
+package io.aregger.odff;
 
-import io.aregger.odff.service.ConnectionDefinition;
-import io.aregger.odff.service.ConnectionDefinitionUtils;
-import io.aregger.odff.service.PasswordReader;
-import io.aregger.odff.service.TracefileService;
-import io.aregger.odff.service.TracefileServiceImpl;
-import io.aregger.odff.service.TracefileWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
@@ -15,8 +9,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import static io.aregger.odff.application.OracleDiagFileFetcherCliOptions.DEFAULT_CONNECTIONS_FILE;
-import static io.aregger.odff.service.ConnectionDefinition.ORACLE_THIN_SUBPROTOCOL;
+import static io.aregger.odff.OracleDiagFileFetcherCliOptions.DEFAULT_CONNECTIONS_FILE;
+import static io.aregger.odff.ConnectionDefinition.ORACLE_THIN_SUBPROTOCOL;
 import static picocli.CommandLine.Mixin;
 
 @CommandLine.Command(

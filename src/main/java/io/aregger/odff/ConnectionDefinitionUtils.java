@@ -1,4 +1,4 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ConnectionDefinitionUtils {
+final class ConnectionDefinitionUtils {
 
     private ConnectionDefinitionUtils() {
         throw new AssertionError("non-instantiable class");

@@ -1,9 +1,9 @@
-package io.aregger.odff.application;
+package io.aregger.odff;
 
 import static picocli.CommandLine.ArgGroup;
 import static picocli.CommandLine.Option;
 
-public class OracleDiagFileFetcherCliOptions  {
+class OracleDiagFileFetcherCliOptions  {
 
     static final String DEFAULT_CONNECTIONS_FILE = "connections.json";
 

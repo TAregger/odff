@@ -141,7 +141,7 @@
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.aregger.odff.application.OracleDiagFileFetcher</mainClass>
+                                    <mainClass>io.aregger.odff.OracleDiagFileFetcher</mainClass>
                                     <manifestEntries>
                                         <Multi-Release>true</Multi-Release>
                                     </manifestEntries>

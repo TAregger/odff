@@ -1,6 +1,6 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
-public interface TracefileService {
+interface TracefileService {
 
     void initialize(TracefileWriter tracefileWriter, String jdbcConnectionString);
 

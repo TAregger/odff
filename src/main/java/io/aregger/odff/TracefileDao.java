@@ -1,4 +1,4 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import org.springframework.jdbc.core.JdbcOperations;
 

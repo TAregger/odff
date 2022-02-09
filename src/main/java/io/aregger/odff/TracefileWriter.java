@@ -1,4 +1,4 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 import static java.util.Objects.requireNonNull;
 
-public class TracefileWriter {
+class TracefileWriter {
 
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();

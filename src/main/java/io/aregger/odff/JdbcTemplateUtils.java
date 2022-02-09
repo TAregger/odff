@@ -1,4 +1,4 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import oracle.jdbc.datasource.impl.OracleDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;

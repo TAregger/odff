@@ -1,8 +1,8 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import java.util.function.Function;
 
-public class PasswordReader {
+class PasswordReader {
 
     private final Function<String, char[]> reader;
 

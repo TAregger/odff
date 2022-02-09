@@ -1,10 +1,10 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public record ConnectionDefinition(String name, String tnsString, String username, String password) {
+record ConnectionDefinition(String name, String tnsString, String username, String password) {
 
     public static final String ORACLE_THIN_SUBPROTOCOL = "jdbc:oracle:thin:";
 

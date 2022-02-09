@@ -1,4 +1,4 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +7,7 @@ import java.lang.invoke.MethodHandles;
 
 import static java.util.Objects.requireNonNull;
 
-public class TracefileServiceImpl implements TracefileService {
+class TracefileServiceImpl implements TracefileService {
 
     private static final Logger logger = LogManager.getLogger(MethodHandles.lookup().lookupClass());
 

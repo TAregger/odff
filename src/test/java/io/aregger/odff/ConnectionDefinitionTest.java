@@ -1,5 +1,6 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
+import io.aregger.odff.ConnectionDefinition;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

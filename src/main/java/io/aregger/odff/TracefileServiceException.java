@@ -1,6 +1,6 @@
-package io.aregger.odff.service;
+package io.aregger.odff;
 
-public class TracefileServiceException extends RuntimeException {
+class TracefileServiceException extends RuntimeException {
 
     public TracefileServiceException(String message, Throwable cause) {
         super(message, cause);
