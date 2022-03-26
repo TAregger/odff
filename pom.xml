@@ -20,7 +20,7 @@
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
 
         <spring.boot.version>2.6.2</spring.boot.version>
-        <spring.version>5.3.14</spring.version>
+        <spring.version>5.3.17</spring.version>
         <ojdbc11.version>21.1.0.0</ojdbc11.version>
         <log4j.version>2.17.1</log4j.version>
         <picocli.version>4.6.2</picocli.version>
