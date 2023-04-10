@@ -21,7 +21,7 @@
 
         <spring.version>6.0.3</spring.version>
         <ojdbc11.version>23.2.0.0</ojdbc11.version>
-        <log4j.version>2.19.0</log4j.version>
+        <log4j.version>2.20.0</log4j.version>
         <picocli.version>4.7.0</picocli.version>
         <junit.version>5.9.0</junit.version>
         <mockito.version>5.2.0</mockito.version>
